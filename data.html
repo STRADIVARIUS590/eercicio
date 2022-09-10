@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body{
+            font-family:'Courier New', Courier, monospace;
+        }
+        #container{
+            text-align: center;
+        
+
+            /* flex-direction: row; */
+
+            /* flex-wrap: wrap; */
+            
+            /* display: inline; */
+        }
+        #main{
+            display: flex;
+            flex-wrap: wrap;
+            align-items:center;
+            justify-content: center;    
+        }
+        .card{
+            
+ 
+/* hite-space: initial; */
+        
+            display: block;
+            background-color: white;
+            height: 600px;
+            width: 400px;
+            word-wrap: break-word; 
+            border: 1px solid black; 
+            margin:10px;
+            border-radius: 40px;
+        }
+        .card p{
+            
+            color: black;
+            margin: 0%;
+        }
+        img{
+            /* height: 50%; */
+            /* width: 50%; */
+        }
+
+        a{
+            text-decoration: none;
+        }
+        .detailCard{
+            display: flex;
+            border-radius: 20px;
+            width: 100%;
+            /* height: 50%; */
+            border:  1px solid black;
+        }
+        .detailCard div{
+            padding: 10px;
+            /* border : 1px solid red; */
+        }
+        .data_image{
+            
+        }
+
+        .detailCard button{
+            
+            border-bottom-right-radius: 20px;
+            border-top-right-radius: 20px;
+            
+        }
+      
+        
+
+        
+    </style>
+
+</head>
+<body>
+ 
+ 
+    </div>
+    <div id="container">
+        <h3 id="user"></h3>
+        <div v-if="movies && currentMovie==null" id="main">
+            
+             <div v-if="currentMovie" class="detailCard">
+                
+            <!--     <div class="img">
+                </div> -->
+                <div>
+                    <img v-bind:src="currentMovie.poster_path">
+                </div>
+                <div id="datos">
+                     
+                     <!-- {{currentMovie}} -->
+                     <p>{{currentMovie.vote_count}}</p>
+                     
+                    <h2>{{currentMovie.title}}</h2>
+                    <small><i>{{currentMovie.tagline}}</i></small>
+                    <!-- <p>{{currentMovie}}</p> -->
+                    <p>Budget: {{currentMovie.budget}}</p>
+                    <p>Release Date: {{currentMovie.release_date}}</p>
+                 
+                    <hr>
+                    <p>Genres:</p>
+                    <span v-for="genero in currentMovie.genres">{{genero.name}},</span>
+                    <hr>
+                    <p>Duration: {{currentMovie.runtime}} min</p>
+
+
+                    <p>Languages</p>
+                        <span v-for="lang in currentMovie.spoken_languages">{{lang.english_name}},</span>
+
+                    <br>
+                    <a v-bind:href="currentMovie.homepage" target="_blank">Go to Homepage</a>
+                    <p>Popularity:</p>
+                         <p>{{currentMovie.popularity}}</p>
+                </div>
+                     <div>
+                        {{currentMovie.overview}}
+                        <br>
+                        <!--  -->
+                        <p>Producers</p>
+                        <br>
+                        <div>
+                            <span v-for="productora in currentMovie.production_companies">
+                                <img v-bind:src="productora.logo_path" style="width: 50px;" alt="No Image">  
+                            </span>
+                        </div>
+                        <span v-for="productora in currentMovie.production_companies">{{productora.name}},</span>
+
+                        <!--  -->
+                        <p>Countries</p>
+                        <span v-for="pais in currentMovie.production_countries">{{pais.name}},</span>
+                        <p>Revenue</p>
+                        <p>{{currentMovie.revenue}}</p>
+                        <p>Average vote</p>
+                        <p>{{currentMovie.vote_average}}</p>
+                        <p>Vote Count</p>
+                        <p>{{currentMovie.vote_count}}</p>
+
+                    </div>
+                   
+                 <button @click="cerrarDetalle">Close Details</button>
+             </div>
+            
+
+
+             <div v-if="movies" v-for="movie in movies" class="card"  v-bind:id="movie.id">
+                        <img v-bind:src="movie.poster_path">
+                        <div id="datos">
+                            <p>{{movie.original_title}}</p>
+                            <!-- <p>{{movie.vote_count}}</p> -->
+                            <small>({{movie.title}})</small>
+                            <p>{{movie.release_date}}</p>
+                            <p>{{movie.overview}}</p>
+                            <!-- <p>{{movie.id}}</p>-->
+                        </div>
+                        
+                        <div id="images">
+                            
+
+                        </div>
+                        <!-- <p>{{movie.id}}</p> -->
+                        <!-- <p>{{movie.backdrop_path}}</p> -->
+                        <!-- <p>{{movie.poster_path}}</p> -->
+                        <!-- <img src="https://image.tmdb.org/t/p/w220_and_h330_face//rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg" alt=""> -->
+                        <!-- <img src="https://image.tmdb.org/t/p/w220_and_h330_face/movie.poster_path" alt="" width="10" height="10"> -->
+                        <!-- <img v-bind:src="movie.poster_path"  width="100px" height="2000px" alt="wqeqe"> -->
+                        
+                        <button @click='detalle(movie.id)'>More...</button>
+                        <div v-if="movie.rated==false">
+
+                            <p>Rate this movie...</p>
+                
+                            <input v-model= 'movie.rate' type="number" max="10" min="0.5" step="0.5"> 
+                            <br>
+                            <button v-if='movie.rate>0'@click='rate(movie.id, movie.rate)'>Rate</button>
+                        </div>
+                        <div v-else>
+                            <br>
+                            <br>
+                            <p>My rate: {{movie.rate}}</p>
+                            <button @click='deleteRate(movie.id)'>Unrate</button>
+                        </div>
+                    </div>
+        </div>
+    </div>
+             
+             
+
+         
+</body>
+<script>
+    let DEV = false;    // true; // poner como true para ver respuestas de api
+    // DEV = true; // poner como true para ver respuestas de api
+
+    let user =   sessionStorage.getItem('user');
+    user = JSON.parse(user);
+    document.getElementById('user').innerText = 'Welcome,' + user.email;
+
+    // console.log(sessionStorage.getItem('user'));
+    const { createApp } = Vue;
+
+    const app = createApp({
+        data(){
+            return { 
+                currentMovie : null,// pelicula de la cual estamos mostrando el detalle
+                movies : null,
+            }
+        },
+        methods:{
+            deleteRate(id){
+                // console.log(id);
+                let movie = this.findMovie(id);
+                movie.rated = false;
+                movie.rate = 0;
+
+                // var axios = require('axios');
+
+                var config = {
+                method: 'delete',
+                url: 'https://api.themoviedb.org/3/movie/'+id+'/rating?api_key=1218b32df060ddecbbee15f7b375f2b0',
+                headers: { 
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMjE4YjMyZGYwNjBkZGVjYmJlZTE1ZjdiMzc1ZjJiMCIsInN1YiI6IjYzMWE0MzRiY2Y5YmEzMDA3OTg3ZGJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YzU4vH-m-ZCrcK-lp_jyL1Vkz5N_lqHGubNfm6Z7dtQ'
+                }
+                };
+
+                axios(config)
+                .then(function (response) {
+                console.log(JSON.stringify(response.data));
+                if(DEV){
+                   alert(JSON.stringify(response));
+                }   
+                if(response.success){
+                    movie.rate = 0;
+                    movie.rated = false;
+                    
+                }
+                })
+                .catch(function (error) {
+                console.log(error);
+                alert('Ha ocurrido un error');
+                });
+            },
+
+
+
+            rate(id, rate){
+                let url = `https://api.themoviedb.org/3/movie/${id}/rating?api_key=1218b32df060ddecbbee15f7b375f2b0`;
+                console.log(id, rate);
+                let movie = this.findMovie(id);
+                movie.rate = rate;
+                // movie.rated = true;
+
+
+
+
+                //var axios = require('axios');
+                var data = JSON.stringify({
+                "value": rate
+                });
+
+                var config = {
+                method: 'post',
+                url: `https://api.themoviedb.org/3/movie/${id}/rating?api_key=1218b32df060ddecbbee15f7b375f2b0`,
+                headers: { 
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMjE4YjMyZGYwNjBkZGVjYmJlZTE1ZjdiMzc1ZjJiMCIsInN1YiI6IjYzMWE0MzRiY2Y5YmEzMDA3OTg3ZGJjZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YzU4vH-m-ZCrcK-lp_jyL1Vkz5N_lqHGubNfm6Z7dtQ', 
+                    'Content-Type': 'application/json'
+                },
+                data : data
+                };
+
+                axios(config)
+                .then(function (response) {
+                        movie.rated = response.success;
+                        if(DEV){
+                            alert(JSON.stringify(response));
+                        } 
+                })
+                .catch(function (error) {
+                // console.log(error);
+                alert('Ha ocurrido un erorr');
+                });
+            },
+
+
+            cerrarDetalle(){
+                //  document.getElementById(this.currentMovie.id).scrollIntoView({block: "end", behavior: "smooth"});
+                this.currentMovie = null;
+            },
+            detalle(id){
+                console.log('detalle de ',id);
+                // texto de cadena de caracteres ${expresión} texto adicional
+                let url = `https://api.themoviedb.org/3/movie/${id}?api_key=1218b32df060ddecbbee15f7b375f2b0&language=en-US`
+                axios.get(url).then(response=>{
+                    // console.log(response.data);
+                    this.currentMovie = response.data;
+                    this.prepareInfo();
+                                 
+                    window.scrollTo({ top: 0, behavior: 'smooth' });// regresa al top de pagina al mostrar detalle 
+                }).catch(function (error) {
+                console.log(error);
+                });
+            },
+            prepareInfo(){ // hacemos esto por que las imagenes no cargaban de otra forma. Concatenamos el resto de la ruta a la ruta de las imagenes 
+                this.currentMovie.poster_path = "https://image.tmdb.org/t/p/w220_and_h330_face" + this.currentMovie.poster_path;
+                    // this.currentMovie.production_companies.logo_path = "https://image.tmdb.org/t/p/w220_and_h330_face" + this.currentMovie.production_companies.logo_path;
+                    this.currentMovie.production_companies.forEach(company =>{
+                        company.logo_path = "https://image.tmdb.org/t/p/w220_and_h330_face" + company.logo_path;
+
+                    });
+            },
+
+            findMovie(id){
+                let foundMovie = null;
+                this.movies.forEach(movie=>{
+                    if(movie.id == id)
+                       foundMovie =  movie;
+                });
+                return foundMovie;
+            }
+        },
+
+ 
+        mounted(){
+/*                 var config = {
+                method: 'get',
+                url: 'https://api.themoviedb.org/3/movie/popular?api_key=1218b32df060ddecbbee15f7b375f2b0',
+                headers: { }
+                }; */
+/* 
+                axios(config)
+                .then(function (response) {
+                  
+                    // console.log('response movies: ',response.data.results);
+                    this.movies = response.data.results;
+                })
+                .catch(function (error) {
+                console.log(error);
+                }); */
+
+                axios
+                .get('https://api.themoviedb.org/3/movie/popular?api_key=1218b32df060ddecbbee15f7b375f2b0')
+                .then(response => {
+                    this.movies = response.data.results;
+                    this.movies.forEach(element => {
+                        element.overview  = element.overview.substr(0,200);// solo mostramos una parte de la sinopsis
+                        if(element.overview.length == 200) {
+                            element.overview = element.overview + '...';
+                        }
+                        element.poster_path = "https://image.tmdb.org/t/p/w220_and_h330_face" + element.poster_path;           
+                        element.rate = 0;
+                        element.rated = false;
+                    });
+                
+                    console.log(this.movies);
+
+                })
+                .catch(function (error) {
+                console.log(error);
+                });
+                }
+
+    }).mount('#main');
+
+// app.detalle(629176);
+// console.log('app movies: ',app.movies);
+
+function validateInput(value){
+    
+}
+</script>
+</html>
