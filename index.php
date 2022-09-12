@@ -57,11 +57,11 @@
                             email : _email
                         }
                         // console.log(_email);
-                        sessionStorage.setItem('user', temp_user);
-                        // console.log ('fsdf', sessionStorage.getItem('user'));
+                        sessionStorage.setItem('user',JSON.stringify( temp_user)    );
+                        console.log ('fsdf', sessionStorage.getItem('user'));
 
             
-                        window.location.href = 'data.html';
+                      window.location.href = 'data.html';
                     } 
                 // console.log(JSON.stringify(response.data));
                 }

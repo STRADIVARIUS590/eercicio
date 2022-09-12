@@ -201,11 +201,11 @@
 <script>
     let DEV = false;    // true; // poner como true para ver respuestas de api
     // DEV = true; // poner como true para ver respuestas de api
-
+ 
     let user =   sessionStorage.getItem('user');
     user = JSON.parse(user);
     document.getElementById('user').innerText = 'Welcome,' + user.email;
-
+ 
     // console.log(sessionStorage.getItem('user'));
     const { createApp } = Vue;
 
